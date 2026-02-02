@@ -1,7 +1,9 @@
 #include "SpartaHUD.h"
 
+#include "SpartaGameInstance.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/TextBlock.h"
+#include "Kismet/GameplayStatics.h"
 
 ASpartaHUD::ASpartaHUD() : MainMenuWidgetClass(nullptr), HUDWidgetClass(nullptr), CurrentWidget(nullptr)
 {
@@ -29,7 +31,28 @@ void ASpartaHUD::ShowMainMenu(bool bIsRestart)
 			{
 				ButtonText->SetText(FText::FromString(bIsRestart ? TEXT("RESTART") : TEXT("START")));
 			}
+
+			if (bIsRestart)
+			{
+				UFunction* PlayAnimFunc = CurrentWidget->FindFunction(FName("PlayGameOverAnim"));
+				if (PlayAnimFunc)
+				{
+					CurrentWidget->ProcessEvent(PlayAnimFunc, nullptr);
+				}
+
+				if (UTextBlock* TotalScoreText = Cast<UTextBlock>(CurrentWidget->GetWidgetFromName("TotalScoreText")))
+				{
+					if (USpartaGameInstance* SpartaGameInstance = Cast<USpartaGameInstance>(UGameplayStatics::GetGameInstance(GetOwningPlayerController())))
+					{
+						TotalScoreText->SetText(FText::FromString(
+							FString::Printf(TEXT("Total Score: %d"), SpartaGameInstance->TotalScore)
+						));
+					}
+				}
+			}
 		}
+
+
 	}
 }
 

@@ -1,6 +1,7 @@
 #include "SpartaCharacter.h"
 #include "SpartaPlayerController.h"
 #include "EnhancedInputComponent.h"
+#include "OverheadWidget.h"
 #include "SpartaGameState.h"
 #include "Camera/CameraComponent.h"
 #include "Components/TextBlock.h"
@@ -200,11 +201,8 @@ void ASpartaCharacter::UpdateOverheadHP()
 {
 	if (!OverheadWidget) return;
 
-	UUserWidget* OverheadWidgetInstance = OverheadWidget->GetUserWidgetObject();
-	if (!OverheadWidgetInstance) return;
-
-	if (UTextBlock* HPText = Cast<UTextBlock>(OverheadWidgetInstance->GetWidgetFromName(TEXT("OverHeadHP"))))
+	if (UOverheadWidget* HPWidget = Cast<UOverheadWidget>(OverheadWidget->GetUserWidgetObject()))
 	{
-		HPText->SetText(FText::FromString(FString::Printf(TEXT("%.0f / %.0f"), Health, MaxHealth)));
+		HPWidget->UpdateHPText(Health, MaxHealth);
 	}
 }

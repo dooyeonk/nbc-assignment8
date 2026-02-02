@@ -1,10 +1,9 @@
 #include "SpartaGameState.h"
 
-#include "CoinItem.h"
 #include "SpartaGameInstance.h"
 #include "SpartaHUD.h"
 #include "SpartaPlayerController.h"
-#include "SpawnVolume.h"
+#include "WaveData.h"
 #include "Kismet/GameplayStatics.h"
 
 ASpartaGameState::ASpartaGameState()
@@ -13,8 +12,10 @@ ASpartaGameState::ASpartaGameState()
 	SpawnedCoinCount = 0;
 	CollectedCoinCount = 0;
 	CurrentLevelIndex = 0;
-	LevelDuration = 30.0f;
+	CurrentWaveIndex = 0;
 	MaxLevels = 3;
+
+	WaveDataTable = nullptr;
 }
 
 void ASpartaGameState::BeginPlay()
@@ -29,7 +30,6 @@ void ASpartaGameState::BeginPlay()
 		}
 	}
 
-	StartLevel();
 	GetWorldTimerManager().SetTimer(HUDUpdateTimerHandle, this, &ASpartaGameState::UpdateHUD, 0.1f, true);
 }
 
@@ -68,42 +68,17 @@ void ASpartaGameState::StartLevel()
 			}
 		}
 	}
+
+	CurrentWaveIndex = 0;
 	SpawnedCoinCount = 0;
 	CollectedCoinCount = 0;
-
-	TArray<AActor*> FoundVolumes;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASpawnVolume::StaticClass(), FoundVolumes);
-
-	// TODO: dooyeonk, Wave System
-	const int32 ItemToSpawn = 40;
-
-	for (int32 i = 0; i < ItemToSpawn; i++)
-	{
-		if (FoundVolumes.Num() > 0)
-		{
-			ASpawnVolume* SpawnVolume = Cast<ASpawnVolume>(FoundVolumes[0]);
-			if (SpawnVolume)
-			{
-				AActor* SpawnedActor = SpawnVolume->SpawnRandomItem();
-				if (SpawnedActor && SpawnedActor->IsA(ACoinItem::StaticClass()))
-				{
-					SpawnedCoinCount++;
-				}
-			}
-		}
-	}
-
-	GetWorldTimerManager().SetTimer(LevelTimerHandle, this, &ASpartaGameState::OnLevelTimeUp, LevelDuration, false);
-}
-
-void ASpartaGameState::OnLevelTimeUp()
-{
-	EndLevel();
 }
 
 void ASpartaGameState::EndLevel()
 {
-	GetWorldTimerManager().ClearTimer(LevelTimerHandle);
+	GetWorldTimerManager().ClearTimer(WaveTimerHandle);
+	GetWorldTimerManager().ClearTimer(HUDUpdateTimerHandle);
+
 	CurrentLevelIndex++;
 
 	if (UGameInstance* GameInstance = GetGameInstance())
@@ -137,7 +112,10 @@ void ASpartaGameState::OnCoinCollected()
 
 	if (SpawnedCoinCount > 0 && CollectedCoinCount >= SpawnedCoinCount)
 	{
-		EndLevel();
+		if (OnAllCoinCollected.IsBound())
+		{
+			OnAllCoinCollected.Broadcast();
+		}
 	}
 }
 
@@ -148,7 +126,30 @@ void ASpartaGameState::UpdateHUD()
 
 	if (ASpartaHUD* SpartaHUD = PlayerController->GetHUD<ASpartaHUD>())
 	{
-		float RemainingTime = GetWorldTimerManager().GetTimerRemaining(LevelTimerHandle);
+		float RemainingTime = GetWorldTimerManager().GetTimerRemaining(WaveTimerHandle);
+		if (RemainingTime < 0.0f) RemainingTime = 0.0f;
+
 		SpartaHUD->UpdateHUD(RemainingTime, Score, CurrentLevelIndex);
 	}
+}
+
+void ASpartaGameState::OnWaveTimeUp()
+{
+	if (OnWaveTimeUpDelegate.IsBound())
+	{
+		OnWaveTimeUpDelegate.Broadcast();
+	}
+}
+
+FWaveData* ASpartaGameState::GetCurrentWaveData()
+{
+	if (!WaveDataTable) return nullptr;
+
+	TArray<FName> RowNames = WaveDataTable->GetRowNames();
+	if (RowNames.IsValidIndex(CurrentWaveIndex))
+	{
+		static const FString ContextString(TEXT("WaveDataLookup"));
+		return WaveDataTable->FindRow<FWaveData>(RowNames[CurrentWaveIndex], ContextString);
+	}
+	return nullptr;
 }

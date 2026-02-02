@@ -27,7 +27,7 @@ FVector ASpawnVolume::GetRandomPointInVolume() const
 	);
 }
 
-AActor* ASpawnVolume::SpawnRandomItem() const
+AActor* ASpawnVolume::SpawnRandomItem()
 {
 	if (FItemSpawnRow* SelectedRow = GetRandomItem())
 	{
@@ -74,7 +74,7 @@ FItemSpawnRow* ASpawnVolume::GetRandomItem() const
 	return nullptr;
 }
 
-AActor* ASpawnVolume::SpawnItem(const TSubclassOf<AActor> ItemClass) const
+AActor* ASpawnVolume::SpawnItem(const TSubclassOf<AActor> ItemClass)
 {
 	if (!ItemClass) return nullptr;
 	

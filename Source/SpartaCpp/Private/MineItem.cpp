@@ -64,10 +64,15 @@ void AMineItem::Explode()
 
 	if (Particle)
 	{
-		FTimerHandle DestroyParticleTimerHandle;
-		GetWorld()->GetTimerManager().SetTimer(DestroyParticleTimerHandle, [Particle]()
+		FTimerHandle TimerHandle;
+
+		TWeakObjectPtr WeakParticle = Particle;
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, [WeakParticle]()
 		{
-			Particle->DestroyComponent();
+			if (UParticleSystemComponent* ParticlePtr = WeakParticle.Get())
+			{
+				ParticlePtr->DestroyComponent();
+			}
 		}, 2.0f, false);
 	}
 }
