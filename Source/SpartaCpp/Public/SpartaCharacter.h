@@ -18,12 +18,12 @@ public:
 	ASpartaCharacter();
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
-	USpringArmComponent* SpringArmComp;
+	TObjectPtr<USpringArmComponent> SpringArmComp;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
-	UCameraComponent* CameraComp;
+	TObjectPtr<UCameraComponent> CameraComp;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
-	UWidgetComponent* OverheadWidget;
+	TObjectPtr<UWidgetComponent> OverheadWidget;
 
 	UFUNCTION(BlueprintPure, Category = "Health")
 	float GetHealth() const

@@ -13,12 +13,12 @@ public:
 	AMineItem();
 	
 	UPROPERTY()
-	USphereComponent* ExplosionCollision;
+	TObjectPtr<USphereComponent> ExplosionCollision;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item|Effects")
-	UParticleSystem* ExplosionParticle;
+	TObjectPtr<UParticleSystem> ExplosionParticle;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item|Effects")
-	USoundBase* ExplosionSound;
+	TObjectPtr<USoundBase> ExplosionSound;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
 	float ExplosionDelay;

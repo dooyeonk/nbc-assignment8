@@ -20,16 +20,16 @@ protected:
 	FName ItemType;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item|Component")
-	USceneComponent* Scene;
+	TObjectPtr<USceneComponent> Scene;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item|Component")
-	USphereComponent* Collision;
+	TObjectPtr<USphereComponent> Collision;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item|Component")
-	UStaticMeshComponent* StaticMesh;
+	TObjectPtr<UStaticMeshComponent> StaticMesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item|Effects")
-	UParticleSystem* PickupParticle;
+	TObjectPtr<UParticleSystem> PickupParticle;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item|Effects")
-	USoundBase* PickupSound;
+	TObjectPtr<USoundBase> PickupSound;
 
 	virtual void OnItemOverlap(
 		UPrimitiveComponent* OverlappedComp,

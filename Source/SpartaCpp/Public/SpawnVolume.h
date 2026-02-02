@@ -16,11 +16,11 @@ public:
 	ASpawnVolume();
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Spawning")
-	USceneComponent* Scene;
+	TObjectPtr<USceneComponent> Scene;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Spawning")
-	UBoxComponent* SpawningBox;
+	TObjectPtr<UBoxComponent> SpawningBox;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Spawning")
-	UDataTable* ItemDataTable;
+	TObjectPtr<UDataTable> ItemDataTable;
 
 	UFUNCTION(BlueprintCallable, Category="Spawning")
 	AActor* SpawnRandomItem() const;
