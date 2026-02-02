@@ -1,15 +1,12 @@
 #include "SpartaPlayerController.h"
 #include "EnhancedInputSubsystems.h"
 #include "SpartaGameInstance.h"
-#include "SpartaGameState.h"
-#include "Blueprint/UserWidget.h"
-#include "Components/TextBlock.h"
+#include "SpartaHUD.h"
 #include "Kismet/GameplayStatics.h"
 
 ASpartaPlayerController::ASpartaPlayerController()
 	: InputMappingContext(nullptr), MoveAction(nullptr), JumpAction(nullptr), LookAction(nullptr),
-	  SprintAction(nullptr), HUDWidgetClass(nullptr), HUDWidgetInstance(nullptr), MainMenuWidgetClass(nullptr),
-	  MainMenuWidgetInstance(nullptr)
+	  SprintAction(nullptr)
 {
 }
 
@@ -33,103 +30,9 @@ void ASpartaPlayerController::BeginPlay()
 	FString CurrentMapName = GetWorld()->GetMapName();
 	if (CurrentMapName.Contains("MenuLevel"))
 	{
-		ShowMainMenu(false);
-	}
-}
-
-UUserWidget* ASpartaPlayerController::GetHUDWidget() const
-{
-	return HUDWidgetInstance;
-}
-
-void ASpartaPlayerController::ShowGameHUD()
-{
-	if (HUDWidgetInstance)
-	{
-		HUDWidgetInstance->RemoveFromParent();
-		HUDWidgetInstance = nullptr;
-	}
-
-	if (MainMenuWidgetInstance)
-	{
-		MainMenuWidgetInstance->RemoveFromParent();
-		MainMenuWidgetInstance = nullptr;
-	}
-
-	if (HUDWidgetClass)
-	{
-		HUDWidgetInstance = CreateWidget<UUserWidget>(this, HUDWidgetClass);
-		if (HUDWidgetInstance)
+		if (ASpartaHUD* SpartaHUD = GetHUD<ASpartaHUD>())
 		{
-			HUDWidgetInstance->AddToViewport();
-
-			bShowMouseCursor = false;
-			SetInputMode(FInputModeGameOnly());
-		}
-
-		ASpartaGameState* SpartaGameState = GetWorld() ? GetWorld()->GetGameState<ASpartaGameState>() : nullptr;
-		if (SpartaGameState)
-		{
-			SpartaGameState->UpdateHUD();
-		}
-	}
-}
-
-void ASpartaPlayerController::ShowMainMenu(bool bIsRestart)
-{
-	if (HUDWidgetInstance)
-	{
-		HUDWidgetInstance->RemoveFromParent();
-		HUDWidgetInstance = nullptr;
-	}
-
-	if (MainMenuWidgetInstance)
-	{
-		MainMenuWidgetInstance->RemoveFromParent();
-		MainMenuWidgetInstance = nullptr;
-	}
-
-	if (MainMenuWidgetClass)
-	{
-		MainMenuWidgetInstance = CreateWidget<UUserWidget>(this, MainMenuWidgetClass);
-		if (MainMenuWidgetInstance)
-		{
-			MainMenuWidgetInstance->AddToViewport();
-			bShowMouseCursor = true;
-			SetInputMode(FInputModeUIOnly());
-		}
-
-		if (UTextBlock* ButtonText = Cast<UTextBlock>(MainMenuWidgetInstance->GetWidgetFromName(
-			TEXT("StartButtonText"))))
-		{
-			if (bIsRestart)
-			{
-				ButtonText->SetText(FText::FromString(TEXT("RESTART")));
-
-			}
-			else
-			{
-				ButtonText->SetText(FText::FromString(TEXT("START")));
-			}
-		}
-
-		if (bIsRestart)
-		{
-			UFunction* PlayAnimFunc = MainMenuWidgetInstance->FindFunction(FName("PlayGameOverAnim"));
-			if (PlayAnimFunc)
-			{
-				MainMenuWidgetInstance->ProcessEvent(PlayAnimFunc, nullptr);
-			}
-
-			if (UTextBlock* TotalScoreText = Cast<UTextBlock>(
-				MainMenuWidgetInstance->GetWidgetFromName(TEXT("TotalScoreText"))))
-			{
-				if (USpartaGameInstance* GameInstance = Cast<USpartaGameInstance>(
-					UGameplayStatics::GetGameInstance(this)))
-				{
-					TotalScoreText->SetText(FText::FromString(FString::Printf(TEXT("Total Score: %d"), GameInstance->TotalScore)));
-				}
-			}
+			SpartaHUD->ShowMainMenu(false);
 		}
 	}
 }

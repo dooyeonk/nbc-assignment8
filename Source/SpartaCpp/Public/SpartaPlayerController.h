@@ -26,25 +26,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
 	UInputAction* SprintAction;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
-	TSubclassOf<UUserWidget> HUDWidgetClass;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "HUD")
-	UUserWidget* HUDWidgetInstance;
-
-	UFUNCTION(BlueprintPure, Category = "HUD")
-	UUserWidget* GetHUDWidget() const;
-
-	UFUNCTION(BlueprintCallable, Category = "HUD")
-	void ShowGameHUD();
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Menu")
-	TSubclassOf<UUserWidget> MainMenuWidgetClass;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Menu")
-	UUserWidget* MainMenuWidgetInstance;
-
-	UFUNCTION(BlueprintCallable, Category = "Menu")
-	void ShowMainMenu(bool bIsRestart);
-
 	UFUNCTION(BlueprintCallable, Category = "Menu")
 	void StartGame();
 
