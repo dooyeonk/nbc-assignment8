@@ -41,7 +41,6 @@ int32 ASpartaGameState::GetScore() const
 void ASpartaGameState::AddScore(int32 Amount)
 {
 	Score += Amount;
-	UE_LOG(LogTemp, Warning, TEXT("Score: %d"), Score);
 }
 
 void ASpartaGameState::OnGameOver()
