@@ -29,6 +29,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Menu")
 	void StartGame();
 
+	void HandleExitButton();
+	UFUNCTION(BlueprintCallable, Category = "Menu")
+	void ExitGame();
+
 protected:
 	virtual void BeginPlay() override;
 };

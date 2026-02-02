@@ -1,6 +1,7 @@
 #include "SpartaPlayerController.h"
 #include "EnhancedInputSubsystems.h"
 #include "SpartaGameInstance.h"
+#include "SpartaGameState.h"
 #include "SpartaHUD.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -47,4 +48,26 @@ void ASpartaPlayerController::StartGame()
 
 	UGameplayStatics::OpenLevel(GetWorld(), FName("BasicLevel"));
 	SetPause(false);
+}
+
+void ASpartaPlayerController::HandleExitButton()
+{
+	FString CurrentLevelName = UGameplayStatics::GetCurrentLevelName(GetWorld());
+
+	FString MainMenuLevelName = TEXT("MenuLevel");
+
+	bool bIsInGame = (CurrentLevelName != MainMenuLevelName);
+	if (bIsInGame)
+	{
+		UGameplayStatics::OpenLevel(GetWorld(), FName(*MainMenuLevelName));
+	}
+	else
+	{
+		ExitGame();
+	}
+}
+
+void ASpartaPlayerController::ExitGame()
+{
+	UKismetSystemLibrary::QuitGame(GetWorld(), this, EQuitPreference::Quit, false);
 }

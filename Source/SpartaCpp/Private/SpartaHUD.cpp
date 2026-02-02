@@ -32,6 +32,12 @@ void ASpartaHUD::ShowMainMenu(bool bIsRestart)
 				ButtonText->SetText(FText::FromString(bIsRestart ? TEXT("RESTART") : TEXT("START")));
 			}
 
+			if (UTextBlock* ButtonText = Cast<UTextBlock>(
+				CurrentWidget->GetWidgetFromName(TEXT("ExitButtonText"))))
+			{
+				ButtonText->SetText(FText::FromString(bIsRestart ? TEXT("MAIN MENU") : TEXT("EXIT")));
+			}
+
 			if (bIsRestart)
 			{
 				UFunction* PlayAnimFunc = CurrentWidget->FindFunction(FName("PlayGameOverAnim"));
@@ -51,8 +57,6 @@ void ASpartaHUD::ShowMainMenu(bool bIsRestart)
 				}
 			}
 		}
-
-
 	}
 }
 
