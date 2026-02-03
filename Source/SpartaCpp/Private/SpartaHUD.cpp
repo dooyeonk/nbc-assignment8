@@ -89,7 +89,7 @@ void ASpartaHUD::ClearHUD()
 	}
 }
 
-void ASpartaHUD::UpdateHUD(float RemainingTime, int32 Score, int32 LevelIndex)
+void ASpartaHUD::UpdateHUD(float RemainingTime, int32 Score, int32 LevelIndex, int32 WaveIndex)
 {
 	if (!CurrentWidget) return;
 
@@ -111,5 +111,10 @@ void ASpartaHUD::UpdateHUD(float RemainingTime, int32 Score, int32 LevelIndex)
 	if (UTextBlock* LevelText = Cast<UTextBlock>(CurrentWidget->GetWidgetFromName(TEXT("Level"))))
 	{
 		LevelText->SetText(FText::FromString(FString::Printf(TEXT("Level: %d"), LevelIndex + 1)));
+	}
+
+	if (UTextBlock* LevelText = Cast<UTextBlock>(CurrentWidget->GetWidgetFromName(TEXT("Wave"))))
+	{
+		LevelText->SetText(FText::FromString(FString::Printf(TEXT("Wave: %d"), WaveIndex + 1)));
 	}
 }

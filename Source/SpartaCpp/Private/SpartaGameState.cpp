@@ -129,7 +129,7 @@ void ASpartaGameState::UpdateHUD()
 		float RemainingTime = GetWorldTimerManager().GetTimerRemaining(WaveTimerHandle);
 		if (RemainingTime < 0.0f) RemainingTime = 0.0f;
 
-		SpartaHUD->UpdateHUD(RemainingTime, Score, CurrentLevelIndex);
+		SpartaHUD->UpdateHUD(RemainingTime, Score, CurrentLevelIndex, CurrentWaveIndex);
 	}
 }
 

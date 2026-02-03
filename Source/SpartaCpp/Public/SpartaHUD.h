@@ -30,5 +30,5 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "UI")
 	void ClearHUD();
 
-	void UpdateHUD(float RemainingTime, int32 Score, int32 Level);
+	void UpdateHUD(float RemainingTime, int32 Score, int32 LevelIndex, int32 WaveIndex);
 };
