@@ -41,6 +41,13 @@ int32 ASpartaGameState::GetScore() const
 void ASpartaGameState::AddScore(int32 Amount)
 {
 	Score += Amount;
+	if (UGameInstance* GameInstance = GetGameInstance())
+	{
+		if (USpartaGameInstance* SpartaGameInstance = Cast<USpartaGameInstance>(GameInstance))
+		{
+			SpartaGameInstance->AddScore(Amount);
+		}
+	}
 }
 
 void ASpartaGameState::OnGameOver()
@@ -85,7 +92,6 @@ void ASpartaGameState::EndLevel()
 	{
 		if (USpartaGameInstance* SpartaGameInstance = Cast<USpartaGameInstance>(GameInstance))
 		{
-			SpartaGameInstance->AddScore(Score);
 			SpartaGameInstance->CurrentLevelIndex = CurrentLevelIndex;
 		}
 	}
